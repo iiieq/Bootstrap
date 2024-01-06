@@ -2,14 +2,35 @@ name: Build and Package
 
 on:
   push:
-    branches: [ "ux/new-design" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "ux/new-design" ]
+    branches: [ "main" ]
   workflow_dispatch:
   schedule:
     - cron: "0 * * * *"
 
 jobs:
+  sync-with-root:
+    name: Sync with RootHide
+    runs-on: macos-latest
+
+    steps:
+      - name: Set up Git
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git remote add upstream https://github.com/RootHide/Bootstrap
+          git fetch upstream
+          git fetch --all --prune
+          CHANGES=$(git rev-list HEAD...upstream/main --count)
+          if [ $CHANGES -eq 0 ]; then
+            echo "No changes from upstream. Exiting with success."
+            exit 0
+          fi
+          git pull upstream main
+          git add .
+          git commit -m "Sync with RootHide/Bootstrap"
+          git push origin main
   build:
     name: Build Bootstrap
     runs-on: macos-latest
