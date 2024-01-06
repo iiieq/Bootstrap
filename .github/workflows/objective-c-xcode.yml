@@ -63,15 +63,6 @@ jobs:
           name: Bootstrap.tipa
           path: ./packages/Bootstrap.tipa
 
-      - name: Delete old release
-        uses: dev-drprasad/delete-tag-and-release@v0.2.1
-        with:
-          delete_release: true
-          tag_name: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
-
       - name: Get bootstrap artifact
         uses: actions/download-artifact@v2
         with:
@@ -80,7 +71,7 @@ jobs:
       - name: Create new release
         uses: ncipollo/release-action@v1
         with:
-          name: Bootstrap_beta Release
+          name: Bootstrap New UX Release
           body: Installation of this beta file is at the user's own risk and responsibility. No person, including the developers and suppliers of this file, shall be held responsible for any consequences resulting from its installation on the user's phone.
           artifacts: "Bootstrap.tipa"
           tag: release
